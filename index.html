@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Caderno Digital — Dinâmica Discreta e Gráficos de Teia</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Fontes estilo editorial moderno (Seeing Theory + Mathigon) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <!-- Suporte a LaTeX (MathJax) -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- Biblioteca gráfica Plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+</head>
+<body>
+
+  <!-- Barra de progresso superior (estilo Mathigon) -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Cabeçalho / Navegação -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <span class="badge">PROFMAT</span>
+      <span class="brand-title">Sistemas Dinâmicos Discretos</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#cap1" class="nav-item active">01. A Ideia</a>
+      <a href="#cap2" class="nav-item">02. O Mapa Logístico</a>
+      <a href="#cap3" class="nav-item">03. A Teia (Cobweb)</a>
+      <a href="#cap4" class="nav-item">04. Caos e Ciclos</a>
+    </nav>
+  </header>
+
+  <!-- Capa / Hero (estilo Seeing Theory) -->
+  <section class="hero">
+    <div class="hero-content">
+      <p class="hero-kicker">CADERNO DIGITAL INTERATIVO</p>
+      <h1>Como regras simples criam comportamentos imprevisíveis?</h1>
+      <p class="hero-subtitle">
+        Uma investigação visual sobre equações de diferenças, pontos de equilíbrio e gráficos de teia (<em>cobweb plots</em>).
+      </p>
+      <a href="#cap1" class="btn-primary">Começar a exploração ↓</a>
+    </div>
+  </section>
+
+  <!-- Conteúdo Principal -->
+  <main class="container">
+
+    <!-- CAPÍTULO 1 -->
+    <section id="cap1" class="chapter">
+      <div class="chapter-text">
+        <span class="chapter-tag">CAPÍTULO 01</span>
+        <h2>O passo a passo de uma mudança</h2>
+        <p>
+          Imagine que você queira acompanhar como uma quantidade muda ao longo do tempo — pode ser a proporção de estudantes sabendo de um boato na escola ou o tamanho relativo de uma população a cada mês.
+        </p>
+        <p>
+          Em vez de uma fórmula que dá a resposta final direto, usamos uma <strong>relação de recorrência</strong>: o valor de amanhã ($x_{n+1}$) depende diretamente do valor de hoje ($x_n$).
+        </p>
+
+        <!-- Cartão interativo estilo Mathigon -->
+        <div class="mathigon-card">
+          <div class="card-header">
+            <span class="icon">🎯</span>
+            <strong>Desafio de Previsão</strong>
+          </div>
+          <p>
+            Se uma população dobra a cada dia ($x_{n+1} = 2x_n$) e começamos com $x_0 = 3$, qual será o valor no 3º dia ($x_3$)?
+          </p>
+          <div class="quiz-options" data-answer="24">
+            <button class="quiz-btn" data-val="6">6</button>
+            <button class="quiz-btn" data-val="12">12</button>
+            <button class="quiz-btn" data-val="24">24</button>
+            <button class="quiz-btn" data-val="18">18</button>
+          </div>
+          <p class="quiz-feedback" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <!-- Visualização 01 -->
+      <div class="chapter-visual">
+        <div class="sim-box">
+          <div class="sim-header">
+            <span>VISUALIZAÇÃO 01 — CRESCIMENTO ITERATIVO</span>
+            <span class="status-pill pill-ready">Interativo</span>
+          </div>
+
+          <div id="grafico-iterativo" class="plot-area"></div>
+
+          <div class="sim-controls-preview">
+            <div class="control-row">
+              <label for="slider-r1">Taxa de crescimento ($r$): <strong id="valor-r1">1.50</strong></label>
+              <input id="slider-r1" type="range" min="0.5" max="2.5" step="0.05" value="1.5" />
+            </div>
+            <div class="control-row">
+              <label for="slider-n1">Número de passos ($n$): <strong id="valor-n1">10</strong></label>
+              <input id="slider-n1" type="range" min="3" max="20" step="1" value="10" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- CAPÍTULO 2 -->
+    <section id="cap2" class="chapter">
+      <div class="chapter-text">
+        <span class="chapter-tag" style="color: #7c3aed; background: #ede9fe;">CAPÍTULO 02</span>
+        <h2>O Mapa Logístico</h2>
+        <p>
+          Na natureza (e nas redes sociais), nada cresce para sempre sem encontrar limites. Quando falta espaço ou alimento, o crescimento freia.
+        </p>
+        <p>
+          Para modelar isso, usamos a equação logística:
+        </p>
+        <div class="formula-box">
+          $$x_{n+1} = r \cdot x_n \cdot (1 - x_n)$$
+        </div>
+        <p>
+          Aqui, $x_n$ representa uma porcentagem da capacidade máxima (um número entre $0$ e $1$), e $r$ é a intensidade do crescimento.
+        </p>
+
+        <div class="callout-box">
+          <strong>💡 Para observar:</strong> Quando $x_n$ chega muito perto de $1$, o termo $(1 - x_n)$ fica próximo de zero — puxando a população para baixo na etapa seguinte. Note também onde a parábola cruza a reta $y = x$.
+        </div>
+      </div>
+
+      <!-- Visualização 02 -->
+      <div class="chapter-visual">
+        <div class="sim-box">
+          <div class="sim-header">
+            <span>VISUALIZAÇÃO 02 — A PARÁBOLA LOGÍSTICA</span>
+            <span class="status-pill pill-ready">Interativo</span>
+          </div>
+
+          <div id="grafico-parabola" class="plot-area"></div>
+
+          <div class="sim-controls-preview">
+            <div class="control-row">
+              <label for="slider-r2">Parâmetro de crescimento ($r$): <strong id="valor-r2">2.80</strong></label>
+              <input id="slider-r2" type="range" min="0" max="4" step="0.05" value="2.8" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- CAPÍTULO 3 -->
+    <section id="cap3" class="chapter">
+      <div class="chapter-text">
+        <span class="chapter-tag" style="color: #059669; background: #d1fae5;">CAPÍTULO 03</span>
+        <h2>A Teia (Cobweb Plot)</h2>
+        <p>
+          Como visualizar dezenas de passos sem fazer contas intermináveis? Usamos um truque geométrico: desenhamos a parábola $f(x)$ junto com a reta diagonal $y = x$.
+        </p>
+        <ul class="step-list">
+          <li><strong>Passo 1 (Vertical):</strong> Partimos de $x_n$ e vamos verticalmente até tocar a curva para achar $x_{n+1}$.</li>
+          <li><strong>Passo 2 (Horizontal):</strong> Vamos horizontalmente até a diagonal $y = x$ para transferir esse resultado de volta ao eixo horizontal.</li>
+          <li><strong>Passo 3 (Repetir):</strong> O zigue-zague formado revela o destino do sistema!</li>
+        </ul>
+
+        <div class="mathigon-card">
+          <div class="card-header">
+            <span class="icon">🔍</span>
+            <strong>Missão de Investigação</strong>
+          </div>
+          <p>
+            Experimente deixar $r = 2{,}80$ e aumente os passos ($n$). Observe como a teia <strong>espirala para um único ponto</strong> onde a parábola cruza a reta $y = x$. Depois, teste $r = 3{,}20$!
+          </p>
+        </div>
+      </div>
+
+      <!-- Visualização 03 -->
+      <div class="chapter-visual">
+        <div class="sim-box sim-box-highlight">
+          <div class="sim-header">
+            <span>VISUALIZAÇÃO 03 — SIMULADOR COBWEB</span>
+            <span class="status-pill pill-ready">Interativo</span>
+          </div>
+
+          <div id="grafico-cobweb" class="plot-area plot-area-tall"></div>
+
+          <div class="sim-controls-preview">
+            <div class="control-row">
+              <label for="slider-r3">Parâmetro ($r$): <strong id="valor-r3">2.80</strong></label>
+              <input id="slider-r3" type="range" min="0.5" max="4" step="0.02" value="2.8" />
+            </div>
+            <div class="controls-grid">
+              <div class="control-row">
+                <label for="slider-x1">Condição inicial ($x_1$): <strong id="valor-x1">0.20</strong></label>
+                <input id="slider-x1" type="range" min="0.02" max="0.98" step="0.01" value="0.2" />
+              </div>
+              <div class="control-row">
+                <label for="slider-n3">Passos ($n$): <strong id="valor-n3">18</strong></label>
+                <input id="slider-n3" type="range" min="1" max="60" step="1" value="18" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- CAPÍTULO 4 -->
+    <section id="cap4" class="chapter">
+      <div class="chapter-text">
+        <span class="chapter-tag" style="color: #e11d48; background: #ffe4e6;">CAPÍTULO 04</span>
+        <h2>Ciclos e Caos</h2>
+        <p>
+          Ao empurrar o parâmetro $r$ para valores acima de $3$, o ponto de equilíbrio perde a estabilidade. A teia passa a saltar eternamente entre dois valores, depois quatro, oito... até entrar no regime caótico.
+        </p>
+        <p>
+          No caos determinístico, a regra continua exata, mas qualquer diferença minúscula no ponto de partida muda completamente o futuro do sistema.
+        </p>
+
+        <div class="callout-box">
+          <strong>🦋 Teste o Efeito Borboleta:</strong> Com $r = 3{,}90$, as duas órbitas começam praticamente coladas ($x_1 = 0{,}200$ e $x_1' = 0{,}201$). Veja em qual passo elas perdem a sincronia!
+        </div>
+      </div>
+
+      <!-- Visualização 04 -->
+      <div class="chapter-visual">
+        <div class="sim-box">
+          <div class="sim-header">
+            <span>VISUALIZAÇÃO 04 — SENSIBILIDADE INICIAL</span>
+            <span class="status-pill pill-ready">Interativo</span>
+          </div>
+
+          <div id="grafico-caos" class="plot-area"></div>
+
+          <div class="sim-controls-preview">
+            <div class="control-row">
+              <label for="slider-r4">Parâmetro ($r$): <strong id="valor-r4">3.90</strong></label>
+              <input id="slider-r4" type="range" min="2.5" max="4" step="0.02" value="3.9" />
+            </div>
+            <div class="control-row">
+              <label for="slider-diff">Diferença inicial ($\Delta x$): <strong id="valor-diff">0.001</strong></label>
+              <input id="slider-diff" type="range" min="0.001" max="0.05" step="0.001" value="0.001" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>Produto Educacional — Mestrado Profissional em Matemática em Rede Nacional (PROFMAT)</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
